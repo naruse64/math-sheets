@@ -25,32 +25,6 @@
     lang: "ja",
   )
   
-  // // ヘッダー部分
-  // grid(
-  //   columns: (1fr, 1fr),
-  //   [
-  //     #text(size: 14pt, weight: "bold")[#title]
-  //   ],
-  //   [
-  //     #if date != none {
-  //       text(size: 10pt)[#date]
-  //     }
-  //   ],
-  // )
-  
-  // v(0.3cm)
-  
-  // // 名前記入欄
-  // if name-field {
-  //   box(
-  //     width: 100%,
-  //     stroke: none,
-  //   )[
-  //     なまえ: #h(0.5cm) #line(length: 5cm, stroke: 0.5pt) #h(1fr)
-  //   ]
-  //   v(0.5cm)
-  // }
-  
   // 問題部分
   problems
 }
