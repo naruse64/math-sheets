@@ -55,6 +55,15 @@
   problems
 }
 
+// 解答欄ボックス定義
+#let answer-box() = box(
+  width: 1.8cm,
+  height: 1.8cm,
+  stroke: 1pt,
+  inset: 0.3em,
+  baseline: 35%
+)[]
+
 // 問題レイアウト関数
 // 縦に5問の2列レイアウト
 #let problem-grid(problems) = {
@@ -70,13 +79,7 @@
       for (i, prob) in problems.slice(0, calc.min(5, problems.len())).enumerate() {
         [
           #text[
-            #prob.question #h(0.2em) = #h(0.2em) #box(
-              width: 1.8cm,
-              height: 1.8cm,
-              stroke: 1pt,
-              inset: 0.3em,
-              baseline: 35%
-            )[]
+            #prob.question #h(0.2em) = #h(0.2em) #answer-box()
           ]
         ]
         v(1.2cm)
@@ -88,13 +91,7 @@
         for (i, prob) in problems.slice(5).enumerate() {
           [
             #text[
-              #prob.question #h(0.2em) = #h(0.2em) #box(
-                width: 1.8cm,
-                height: 1.8cm,
-                stroke: 1pt,
-                inset: 0.3cm,
-              baseline: 35%
-              )[]
+              #prob.question #h(0.2em) = #h(0.2em) #answer-box()
             ]
           ]
           v(1.2cm)
