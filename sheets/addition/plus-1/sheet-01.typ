@@ -1,3 +1,3 @@
-#import "/generators/addition.typ": create-plus-one-sheet
+#import "/generators/addition.typ": create-addition-sheet
 
-#create-plus-one-sheet(1)
+#create-addition-sheet(1, addend: 1)

@@ -25,9 +25,9 @@ for i in {1..10}; do
     # シートファイルが存在しない場合は作成
     if [ ! -f "$SHEET_FILE" ]; then
         cat > "$SHEET_FILE" << EOF
-#import "/generators/addition.typ": create-plus-one-sheet
+#import "/generators/addition.typ": create-addition-sheet
 
-#create-plus-one-sheet($i)
+#create-addition-sheet($i, addend: 1)
 EOF
     fi
     

@@ -19,9 +19,9 @@ OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 def generate_sheet_file(sheet_num):
     """個別シートファイルを生成"""
-    content = f"""#import "/generators/addition.typ": create-plus-one-sheet
+    content = f"""#import "/generators/addition.typ": create-addition-sheet
 
-#create-plus-one-sheet({sheet_num})
+#create-addition-sheet({sheet_num}, addend: 1)
 """
     filepath = SHEETS_DIR / f"sheet-{sheet_num:02d}.typ"
     filepath.write_text(content, encoding="utf-8")

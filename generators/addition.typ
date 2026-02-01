@@ -26,8 +26,3 @@
     problems: problem-grid(problems),
   )
 }
-
-// 後方互換性のため
-#let create-plus-one-sheet(sheet-number) = {
-  create-addition-sheet(sheet-number, addend: 1)
-}
