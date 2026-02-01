@@ -61,14 +61,14 @@
     column-gutter: 0.8em,
     // 左列（最初の5問）
     {
-      for (i, prob) in problems.slice(0, calc.min(5, problems.len())).enumerate() {
+      for prob in problems.slice(0, calc.min(5, problems.len())) {
         render-problem(prob)
       }
     },
     // 右列（6問目以降）
     {
       if problems.len() > 5 {
-        for (i, prob) in problems.slice(5).enumerate() {
+        for prob in problems.slice(5) {
           render-problem(prob)
         }
       }
