@@ -39,6 +39,16 @@
   baseline: 35%
 )[]
 
+// 単一の問題を表示する関数（共通処理）
+#let render-problem(prob) = {
+  [
+    #problem-text()[
+      #prob.question #h(0.2em) = #h(0.2em) #answer-box()
+    ]
+  ]
+  v(1.2cm)
+}
+
 // 問題レイアウト関数
 // 縦に5問の2列レイアウト
 #let problem-grid(problems) = {
@@ -52,24 +62,14 @@
     // 左列（最初の5問）
     {
       for (i, prob) in problems.slice(0, calc.min(5, problems.len())).enumerate() {
-        [
-          #problem-text()[
-            #prob.question #h(0.2em) = #h(0.2em) #answer-box()
-          ]
-        ]
-        v(1.2cm)
+        render-problem(prob)
       }
     },
     // 右列（6問目以降）
     {
       if problems.len() > 5 {
         for (i, prob) in problems.slice(5).enumerate() {
-          [
-            #problem-text()[
-              #prob.question #h(0.2em) = #h(0.2em) #answer-box()
-            ]
-          ]
-          v(1.2cm)
+          render-problem(prob)
         }
       }
     }
