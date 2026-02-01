@@ -3,15 +3,6 @@
 
 #import "/templates/worksheet.typ": *
 
-// +1の問題を生成する関数
-#let generate-plus-one-problems(start, count: 10) = {
-  let problems = ()
-  for i in range(count) {
-    let num = start + i
-    problems.push(make-addition(num, 1))
-  }
-  problems
-}
 
 // シート番号から開始番号を計算
 #let sheet-start-number(sheet-num, problems-per-sheet) = {
