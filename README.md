@@ -26,7 +26,7 @@
 
 #### Bashスクリプト使用（推奨）
 ```bash
-# +1足し算プリント（13ページ）
+# +1足し算プリント（10ページ）
 ./scripts/build-plus-1.sh
 
 # 出力: output/addition/plus-1-all.pdf
@@ -34,7 +34,7 @@
 
 #### Pythonスクリプト使用
 ```bash
-# +1足し算プリント（13ページ）
+# +1足し算プリント（10ページ）
 python3 scripts/generate_all.py
 
 # 出力: output/addition/plus-1-all.pdf
