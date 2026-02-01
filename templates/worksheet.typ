@@ -75,6 +75,7 @@
               height: 1.8cm,
               stroke: 1pt,
               inset: 0.3em,
+              baseline: 35%
             )[]
           ]
         ]
@@ -92,6 +93,7 @@
                 height: 1.8cm,
                 stroke: 1pt,
                 inset: 0.3cm,
+              baseline: 35%
               )[]
             ]
           ]
