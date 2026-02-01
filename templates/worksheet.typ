@@ -18,16 +18,17 @@
     ),
   )
   
-  // フォント設定: 子どもが読みやすい大きさ
-  set text(
-    font: "Hiragino Sans",
-    size: 20pt,
-    lang: "ja",
-  )
-  
   // 問題部分
   problems
 }
+
+// 問題用のテキストスタイル関数
+#let problem-text(content) = text(
+  font: "Hiragino Sans",
+  size: 20pt,
+  lang: "ja",
+  content
+)
 
 // 解答欄ボックス定義
 #let answer-box() = box(
@@ -52,7 +53,7 @@
     {
       for (i, prob) in problems.slice(0, calc.min(5, problems.len())).enumerate() {
         [
-          #text[
+          #problem-text()[
             #prob.question #h(0.2em) = #h(0.2em) #answer-box()
           ]
         ]
@@ -64,7 +65,7 @@
       if problems.len() > 5 {
         for (i, prob) in problems.slice(5).enumerate() {
           [
-            #text[
+            #problem-text()[
               #prob.question #h(0.2em) = #h(0.2em) #answer-box()
             ]
           ]
