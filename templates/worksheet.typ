@@ -13,15 +13,15 @@
     margin: (
       top: 1.5cm,
       bottom: 1.5cm,
-      left: 1.2cm,
-      right: 1.2cm,
+      left: -0.5cm,
+      right: 0.5cm,
     ),
   )
   
   // フォント設定: 子どもが読みやすい大きさ
   set text(
     font: "Hiragino Sans",
-    size: 11pt,
+    size: 20pt,
     lang: "ja",
   )
   
@@ -56,35 +56,50 @@
 }
 
 // 問題レイアウト関数
-// 8問を縦に並べる（A5で適切なサイズ）
+// 縦に5問の2列レイアウト
 #let problem-grid(problems) = {
   // 各問題の間隔を調整
-  set par(leading: 0.8em)
+  set par(leading: 0.1em)
   
-  for (i, prob) in problems.enumerate() {
-    grid(
-      columns: (auto, 1fr),
-      column-gutter: 1em,
-      // 問題番号
-      // [
-      //   #text(size: 12pt, weight: "regular")[#(i + 1).]
-      // ],
-      // 式
-      [
-        #text(size: 18pt, font: "Arial")[
-          #prob.question #h(0.8em) = #h(0.8em) #box(
-            width: 2.5em,
-            height: 1.8em,
-            stroke: 1pt,
-            inset: 0.3em,
-          )[]
+  // 2列のグリッドを作成
+  grid(
+    columns: (1fr, 1fr),
+    column-gutter: 0.8em,
+    // 左列（最初の5問）
+    {
+      for (i, prob) in problems.slice(0, calc.min(5, problems.len())).enumerate() {
+        [
+          #text[
+            #prob.question #h(0.2em) = #h(0.2em) #box(
+              width: 1.8cm,
+              height: 1.8cm,
+              stroke: 1pt,
+              inset: 0.3em,
+            )[]
+          ]
         ]
-      ],
-    )
-    
-    // 問題間のスペース
-    v(0.7cm)
-  }
+        v(1.2cm)
+      }
+    },
+    // 右列（6問目以降）
+    {
+      if problems.len() > 5 {
+        for (i, prob) in problems.slice(5).enumerate() {
+          [
+            #text[
+              #prob.question #h(0.2em) = #h(0.2em) #box(
+                width: 1.8cm,
+                height: 1.8cm,
+                stroke: 1pt,
+                inset: 0.3cm,
+              )[]
+            ]
+          ]
+          v(1.2cm)
+        }
+      }
+    }
+  )
 }
 
 // 単純な足し算問題を生成

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 +1足し算プリント一括生成スクリプト
-1+1 から 100+1 まで、8問ずつ13ページのPDFを生成
+1+1 から 100+1 まで、10問ずつ10ページのPDFを生成
 """
 
 import os
@@ -64,7 +64,7 @@ def merge_pdfs_with_gs(pdf_files, output_file):
     return result.returncode == 0
 
 def main():
-    total_sheets = 13
+    total_sheets = 10
     
     print(f"=== +1足し算プリント生成 ===")
     print(f"総問題数: 100問（1+1 から 100+1）")
