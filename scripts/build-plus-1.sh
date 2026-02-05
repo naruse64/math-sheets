@@ -16,7 +16,7 @@ echo ""
 TEMP_DIR=$(mktemp -d)
 trap "rm -rf $TEMP_DIR" EXIT
 
-# 13シート生成（1+1 から 100+1）
+# 10シート生成（1+1 から 100+1）
 for i in {1..10}; do
     SHEET_NUM=$(printf "%02d" $i)
     SHEET_FILE="sheets/addition/plus-1/sheet-$SHEET_NUM.typ"
