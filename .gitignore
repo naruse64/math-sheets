@@ -13,3 +13,6 @@ output/
 # 一時ファイル
 tmp/
 temp/
+
+# sheets配下の全ファイルを除外（フォルダ構造は保持）
+sheets/**/*.typ
