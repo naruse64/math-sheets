@@ -82,15 +82,21 @@ math-sheets/
 │       └── plus-1/
 ├── scripts/         # ビルドスクリプト
 └── output/          # 生成されたPDF
-    └── addition/
+    └── addition/    # A5縦版
+│       └── 2up/    # A4横2up版
 ```
 
 ## 要件
 
 - Typst
 - Ghostscript（PDF結合用）
+- pdfjam（PDFまとめ加工用）
 ```bash
+ # Typst と Ghostscript をインストール
 brew install typst ghostscript
+# BasicTeX + pdfjam をインストール
+brew install --cask basictex
+sudo tlmgr install pdfjam
 ```
 
 ## ライセンス

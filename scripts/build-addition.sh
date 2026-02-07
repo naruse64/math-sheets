@@ -22,6 +22,7 @@ PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"  # scriptsの親ディレクトリ
 cd "$PROJECT_ROOT"
 
 mkdir -p "output/addition"
+mkdir -p "output/addition/2up"
 mkdir -p "sheets/addition/plus-$ADDEND"
 
 echo "=== +${ADDEND}足し算プリント生成 ==="
@@ -63,4 +64,15 @@ gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite \
    -sOutputFile="$PROJECT_ROOT/output/addition/plus-${ADDEND}-all.pdf" \
    "$TEMP_DIR"/sheet-*.pdf
 
-echo "✓ 完了: output/addition/plus-${ADDEND}-all.pdf (10ページ)"
+echo "✓ A5縦版完了: output/addition/plus-${ADDEND}-all.pdf (10ページ)"
+
+# 2ページ分割版: A4横5ページ（2up）
+if command -v pdfjam &> /dev/null; then
+    pdfjam --nup 2x1 --landscape --paper a4paper \
+           --outfile "$PROJECT_ROOT/output/addition/2up/plus-${ADDEND}-all-2up.pdf" \
+           "$TEMP_DIR"/sheet-*.pdf 2>/dev/null
+    echo "✓ A4横2up版完了: output/addition/2up/plus-${ADDEND}-all-2up.pdf (5ページ)"
+else
+    echo "⚠ pdfjamが見つかりません。2up版の生成をスキップします。"
+    echo "  インストール: brew install pdfjam"
+fi
