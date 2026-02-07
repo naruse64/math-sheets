@@ -1,7 +1,7 @@
 #!/bin/bash
-# +1足し算プリント生成
+# +3足し算プリント生成
 # build-addition.sh のラッパー
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-"$SCRIPT_DIR/build-addition.sh" 1
+"$SCRIPT_DIR/build-addition.sh" 3

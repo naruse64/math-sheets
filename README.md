@@ -13,8 +13,8 @@
 
 ### 足し算
 - [x] +1（1+1 から 100+1）
-- [ ] +2（1+2 から 100+2）
-- [ ] +3（1+3 から 100+3）
+- [x] +2（1+2 から 100+2）
+- [x] +3（1+3 から 100+3）
 
 ### 引き算（予定）
 - [ ] -1
@@ -29,7 +29,20 @@
 # +1足し算プリント（10ページ）
 ./scripts/build-plus-1.sh
 
+# +2足し算プリント（10ページ）
+./scripts/build-plus-2.sh
+
+# +3足し算プリント（10ページ）
+./scripts/build-plus-3.sh
+
+# +10足し算プリント（10ページ）
+./scripts/build-addition.sh 10
+
+
 # 出力: output/addition/plus-1-all.pdf
+# 出力: output/addition/plus-2-all.pdf
+# 出力: output/addition/plus-3-all.pdf
+# 出力: output/addition/plus-10-all.pdf
 ```
 
 #### Pythonスクリプト使用
