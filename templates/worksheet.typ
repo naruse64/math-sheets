@@ -17,7 +17,7 @@
       right: 0.5cm,
     ),
   )
-  
+
   // 問題部分
   problems
 }
@@ -27,7 +27,7 @@
   font: "Hiragino Sans",
   size: 20pt,
   lang: "ja",
-  content
+  content,
 )
 
 // 解答欄ボックス定義
@@ -36,7 +36,7 @@
   height: 1.8cm,
   stroke: 1pt,
   inset: 0.3em,
-  baseline: 35%
+  baseline: 35%,
 )[]
 
 // 単一の問題を表示する関数（共通処理）
@@ -54,7 +54,7 @@
 #let problem-grid(problems) = {
   // 各問題の間隔を調整
   set par(leading: 0.1em)
-  
+
   // 2列のグリッドを作成
   grid(
     columns: (1fr, 1fr),
@@ -72,7 +72,7 @@
           render-problem(prob)
         }
       }
-    }
+    },
   )
 }
 
