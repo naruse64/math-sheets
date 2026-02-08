@@ -31,19 +31,19 @@
 )
 
 // 解答欄ボックス定義
-#let answer-box() = box(
+#let answer-box(show-border: true) = box(
   width: 1.8cm,
   height: 1.8cm,
-  stroke: 1pt,
+  stroke: if show-border { 1pt } else { none },
   inset: 0.3em,
   baseline: 35%,
 )[]
 
 // 単一の問題を表示する関数（共通処理）
-#let render-problem(prob) = {
+#let render-problem(prob, show-border: true) = {
   [
     #problem-text()[
-      #prob.question #h(0.2em) = #h(0.2em) #answer-box()
+      #prob.question #h(0.2em) = #h(0.2em) #answer-box(show-border: show-border)
     ]
   ]
   v(1.2cm)
@@ -51,7 +51,7 @@
 
 // 問題レイアウト関数
 // 縦に5問の2列レイアウト
-#let problem-grid(problems) = {
+#let problem-grid(problems, show-border: true) = {
   // 各問題の間隔を調整
   set par(leading: 0.1em)
 
@@ -62,14 +62,14 @@
     // 左列（最初の5問）
     {
       for prob in problems.slice(0, calc.min(5, problems.len())) {
-        render-problem(prob)
+        render-problem(prob, show-border: show-border)
       }
     },
     // 右列（6問目以降）
     {
       if problems.len() > 5 {
         for prob in problems.slice(5) {
-          render-problem(prob)
+          render-problem(prob, show-border: show-border)
         }
       }
     },
