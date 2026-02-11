@@ -4,9 +4,10 @@
 # 使用例:
 #   ./build-addition.sh 1                    # +1 標準版（問題のみ）
 #   ./build-addition.sh 1 --answer           # +1 標準版（問題+解答）
+#   ./build-addition.sh 1 --border           # +1 標準版+枠あり版（問題のみ）
 #   ./build-addition.sh 1 --2up              # +1 標準版+2up版（問題のみ）
 #   ./build-addition.sh 1 --all              # +1 全バリエーション
-#   ./build-addition.sh 1 --answer --2up     # +1 標準版+2up版（問題+解答）
+#   ./build-addition.sh 1 --answer --border --2up  # 複数組み合わせ
 
 set -e
 
@@ -20,13 +21,20 @@ usage() {
   echo "オプション:"
   echo "  --answer        解答版も生成"
   echo "  --2up           2up版（A4横）も生成"
-  echo "  --no-border     枠なし版も生成"
+  echo "  --border        枠あり版も生成"
   echo "  --all           全バリエーション生成"
   echo ""
+  echo "生成されるファイル:"
+  echo "  standard/       枠なし（デフォルト）"
+  echo "  standard-2up/   枠なし・2up版（--2up時）"
+  echo "  border/         枠あり（--border時）"
+  echo "  border-2up/     枠あり・2up版（--border --2up時）"
+  echo ""
   echo "例:"
-  echo "  $0 1            # +1 標準版（問題のみ）"
-  echo "  $0 1 --answer   # +1 標準版（問題+解答）"
-  echo "  $0 2 --all      # +2 全バリエーション"
+  echo "  $0 1                 # 枠なし版のみ"
+  echo "  $0 1 --border        # 枠なし版+枠あり版"
+  echo "  $0 1 --answer --2up  # 枠なし版+枠なし2up版（問題+解答）"
+  echo "  $0 2 --all           # +2 全バリエーション"
   exit 1
 }
 

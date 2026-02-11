@@ -9,7 +9,7 @@ OPERATION=""
 ADDEND=""
 BUILD_ANSWER=false
 BUILD_2UP=false
-BUILD_NO_BORDER=false
+BUILD_BORDER=false
 BUILD_ALL=false
 
 # 引数パース
@@ -31,15 +31,15 @@ while [[ $# -gt 0 ]]; do
       BUILD_2UP=true
       shift
       ;;
-    --no-border)
-      BUILD_NO_BORDER=true
+    --border)
+      BUILD_BORDER=true
       shift
       ;;
     --all)
       BUILD_ALL=true
       BUILD_ANSWER=true
       BUILD_2UP=true
-      BUILD_NO_BORDER=true
+      BUILD_BORDER=true
       shift
       ;;
     *)
@@ -87,8 +87,8 @@ esac
 SHEET_DIR="sheets/$OPERATION/$(basename $OUTPUT_BASE)"
 mkdir -p "$OUTPUT_BASE/standard"
 mkdir -p "$OUTPUT_BASE/standard-2up"
-mkdir -p "$OUTPUT_BASE/no-border"
-mkdir -p "$OUTPUT_BASE/no-border-2up"
+mkdir -p "$OUTPUT_BASE/border"
+mkdir -p "$OUTPUT_BASE/border-2up"
 mkdir -p "$SHEET_DIR"
 
 echo "=== ${OPERATOR_SYMBOL}${ADDEND} プリント生成 ==="
@@ -168,21 +168,21 @@ build_2up() {
 for MODE in "${MODES[@]}"; do
   echo "モード: $MODE"
   
-  # 1. 標準版（枠あり・A5縦）- 常に生成
-  build_variant "$MODE" "true" "$OUTPUT_BASE/standard" "standard/$MODE.pdf"
+  # 1. 標準版（枠なし・A5縦）- 常に生成
+  build_variant "$MODE" "false" "$OUTPUT_BASE/standard" "standard/$MODE.pdf"
   
-  # 2. 標準版2up（枠あり・A4横）
+  # 2. 標準版2up（枠なし・A4横）
   if [ "$BUILD_2UP" = true ] || [ "$BUILD_ALL" = true ]; then
     build_2up "$MODE" "$OUTPUT_BASE/standard-2up" "standard-2up/$MODE.pdf"
   fi
   
-  # 3. 枠なし版（枠なし・A5縦）
-  if [ "$BUILD_NO_BORDER" = true ] || [ "$BUILD_ALL" = true ]; then
-    build_variant "$MODE" "false" "$OUTPUT_BASE/no-border" "no-border/$MODE.pdf"
+  # 3. 枠あり版（枠あり・A5縦）
+  if [ "$BUILD_BORDER" = true ] || [ "$BUILD_ALL" = true ]; then
+    build_variant "$MODE" "true" "$OUTPUT_BASE/border" "border/$MODE.pdf"
     
-    # 4. 枠なし版2up（枠なし・A4横）
+    # 4. 枠あり版2up（枠あり・A4横）
     if [ "$BUILD_2UP" = true ] || [ "$BUILD_ALL" = true ]; then
-      build_2up "$MODE" "$OUTPUT_BASE/no-border-2up" "no-border-2up/$MODE.pdf"
+      build_2up "$MODE" "$OUTPUT_BASE/border-2up" "border-2up/$MODE.pdf"
     fi
   fi
   
