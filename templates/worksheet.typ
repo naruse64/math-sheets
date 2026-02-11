@@ -94,3 +94,11 @@
     answer: a + b,
   )
 }
+// 単純な引き算問題を生成
+#let make-subtraction(a, b) = {
+  (
+    // 被減数は3桁右寄せ
+    question: [#box(width: 3em, align(right)[#a]) - #b],
+    answer: a - b,
+  )
+}
