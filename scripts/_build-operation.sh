@@ -86,8 +86,9 @@ esac
 # ディレクトリ作成
 SHEET_DIR="sheets/$OPERATION/$(basename $OUTPUT_BASE)"
 mkdir -p "$OUTPUT_BASE/standard"
-mkdir -p "$OUTPUT_BASE/2up"
+mkdir -p "$OUTPUT_BASE/standard-2up"
 mkdir -p "$OUTPUT_BASE/no-border"
+mkdir -p "$OUTPUT_BASE/no-border-2up"
 mkdir -p "$SHEET_DIR"
 
 echo "=== ${OPERATOR_SYMBOL}${ADDEND} プリント生成 ==="
@@ -108,13 +109,14 @@ build_variant() {
   local MODE=$1
   local SHOW_BORDER=$2
   local OUTPUT_DIR=$3
+  local VARIANT_NAME=$4
   
   local SHOW_ANSWER="false"
   if [ "$MODE" = "answer" ]; then
     SHOW_ANSWER="true"
   fi
   
-  echo "  ${OUTPUT_DIR##*/}/$MODE.pdf を生成中..."
+  echo "  ${VARIANT_NAME} を生成中..."
   
   # 個別シート生成 → 一時PDF出力
   for i in {1..10}; do
@@ -144,29 +146,44 @@ EOF
   echo "    ✓ $OUTPUT_DIR/$MODE.pdf"
 }
 
+# 2up生成関数
+build_2up() {
+  local MODE=$1
+  local OUTPUT_DIR=$2
+  local VARIANT_NAME=$3
+  
+  echo "  ${VARIANT_NAME} (2up) を生成中..."
+  
+  if command -v pdfjam &> /dev/null; then
+    pdfjam --nup 2x1 --landscape --paper a4paper \
+           --outfile "$OUTPUT_DIR/$MODE.pdf" \
+           "$TEMP_DIR"/sheet-*.pdf 2>/dev/null
+    echo "    ✓ $OUTPUT_DIR/$MODE.pdf"
+  else
+    echo "    ⚠ pdfjamが見つかりません。スキップします。"
+  fi
+}
+
 # 各モードでビルド
 for MODE in "${MODES[@]}"; do
   echo "モード: $MODE"
   
-  # 標準版（枠あり）
-  build_variant "$MODE" "true" "$OUTPUT_BASE/standard"
+  # 1. 標準版（枠あり・A5縦）- 常に生成
+  build_variant "$MODE" "true" "$OUTPUT_BASE/standard" "standard/$MODE.pdf"
   
-  # 2up版
+  # 2. 標準版2up（枠あり・A4横）
   if [ "$BUILD_2UP" = true ] || [ "$BUILD_ALL" = true ]; then
-    if command -v pdfjam &> /dev/null; then
-      echo "  2up/$MODE.pdf を生成中..."
-      pdfjam --nup 2x1 --landscape --paper a4paper \
-             --outfile "$OUTPUT_BASE/2up/$MODE.pdf" \
-             "$TEMP_DIR"/sheet-*.pdf 2>/dev/null
-      echo "    ✓ $OUTPUT_BASE/2up/$MODE.pdf"
-    else
-      echo "  ⚠ pdfjamが見つかりません。2up版をスキップします。"
-    fi
+    build_2up "$MODE" "$OUTPUT_BASE/standard-2up" "standard-2up/$MODE.pdf"
   fi
   
-  # 枠なし版
+  # 3. 枠なし版（枠なし・A5縦）
   if [ "$BUILD_NO_BORDER" = true ] || [ "$BUILD_ALL" = true ]; then
-    build_variant "$MODE" "false" "$OUTPUT_BASE/no-border"
+    build_variant "$MODE" "false" "$OUTPUT_BASE/no-border" "no-border/$MODE.pdf"
+    
+    # 4. 枠なし版2up（枠なし・A4横）
+    if [ "$BUILD_2UP" = true ] || [ "$BUILD_ALL" = true ]; then
+      build_2up "$MODE" "$OUTPUT_BASE/no-border-2up" "no-border-2up/$MODE.pdf"
+    fi
   fi
   
   echo ""
