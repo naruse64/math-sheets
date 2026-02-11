@@ -27,13 +27,13 @@
 #### Bashスクリプト使用（推奨）
 ```bash
 # +1足し算プリント（10ページ）
-./scripts/build-plus-1.sh
+./scripts/build-addition.sh 1
 
 # +2足し算プリント（10ページ）
-./scripts/build-plus-2.sh
+./scripts/build-addition.sh 2
 
 # +3足し算プリント（10ページ）
-./scripts/build-plus-3.sh
+./scripts/build-addition.sh 3
 
 # +10足し算プリント（10ページ）
 ./scripts/build-addition.sh 10
