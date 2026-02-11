@@ -1,78 +1,53 @@
 #!/bin/bash
-# 足し算プリント汎用ビルドスクリプト
-# 使用例: ./build-addition.sh 1
-#         ./build-addition.sh 2
-#         ./build-addition.sh 99
-# 99までレイアウト崩れなく使用可能
+# 足し算プリント生成スクリプト
+# 
+# 使用例:
+#   ./build-addition.sh 1                    # +1 標準版（問題のみ）
+#   ./build-addition.sh 1 --answer           # +1 標準版（問題+解答）
+#   ./build-addition.sh 1 --2up              # +1 標準版+2up版（問題のみ）
+#   ./build-addition.sh 1 --all              # +1 全バリエーション
+#   ./build-addition.sh 1 --answer --2up     # +1 標準版+2up版（問題+解答）
 
 set -e
 
+# 使用方法
+usage() {
+  echo "使用法: $0 <加数> [オプション]"
+  echo ""
+  echo "引数:"
+  echo "  <加数>          1, 2, 3... (必須)"
+  echo ""
+  echo "オプション:"
+  echo "  --answer        解答版も生成"
+  echo "  --2up           2up版（A4横）も生成"
+  echo "  --no-border     枠なし版も生成"
+  echo "  --all           全バリエーション生成"
+  echo ""
+  echo "例:"
+  echo "  $0 1            # +1 標準版（問題のみ）"
+  echo "  $0 1 --answer   # +1 標準版（問題+解答）"
+  echo "  $0 2 --all      # +2 全バリエーション"
+  exit 1
+}
+
 # 引数チェック
-if [ $# -ne 1 ]; then
-    echo "使用法: $0 <加数>"
-    echo "例: $0 1  (+1の足し算プリント生成)"
-    echo "    $0 2  (+2の足し算プリント生成)"
-    exit 1
+if [ $# -eq 0 ]; then
+  usage
 fi
 
 ADDEND=$1
+shift  # 残りの引数をオプションとして扱う
+
+# 加数が数値かチェック
+if ! [[ "$ADDEND" =~ ^[0-9]+$ ]]; then
+  echo "エラー: 加数は数値で指定してください"
+  usage
+fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"  # scriptsの親ディレクトリ
-cd "$PROJECT_ROOT"
 
-mkdir -p "output/addition"
-mkdir -p "output/addition/2up"
-mkdir -p "sheets/addition/plus-$ADDEND"
-
-echo "=== +${ADDEND}足し算プリント生成 ==="
-echo ""
-
-# 一時ディレクトリを作成
-TEMP_DIR=$(mktemp -d)
-trap "rm -rf $TEMP_DIR" EXIT
-
-# 10シート生成（1+N から 100+N）
-for i in {1..10}; do
-    SHEET_NUM=$(printf "%02d" $i)
-    SHEET_FILE="sheets/addition/plus-$ADDEND/sheet-$SHEET_NUM.typ"
-    TEMP_PDF="$TEMP_DIR/sheet-$SHEET_NUM.pdf"
-    
-    # シートファイルが存在しない場合は作成
-    if [ ! -f "$SHEET_FILE" ]; then
-        cat > "$SHEET_FILE" << EOF
-#import "/generators/addition.typ": create-addition-sheet
-
-#create-addition-sheet($i, addend: $ADDEND)
-EOF
-    fi
-    
-    # コンパイル
-    if typst compile --root "$PROJECT_ROOT" "$SHEET_FILE" "$TEMP_PDF" 2>/dev/null; then
-        echo "✓ sheet-$SHEET_NUM.pdf"
-    else
-        echo "✗ sheet-$SHEET_NUM.pdf (エラー)"
-        exit 1
-    fi
-done
-
-echo ""
-echo "PDFを結合中..."
-
-# PDFを結合
-gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite \
-   -sOutputFile="$PROJECT_ROOT/output/addition/plus-${ADDEND}-all.pdf" \
-   "$TEMP_DIR"/sheet-*.pdf
-
-echo "✓ A5縦版完了: output/addition/plus-${ADDEND}-all.pdf (10ページ)"
-
-# 2ページ分割版: A4横5ページ（2up）
-if command -v pdfjam &> /dev/null; then
-    pdfjam --nup 2x1 --landscape --paper a4paper \
-           --outfile "$PROJECT_ROOT/output/addition/2up/plus-${ADDEND}-all-2up.pdf" \
-           "$TEMP_DIR"/sheet-*.pdf 2>/dev/null
-    echo "✓ A4横2up版完了: output/addition/2up/plus-${ADDEND}-all-2up.pdf (5ページ)"
-else
-    echo "⚠ pdfjamが見つかりません。2up版の生成をスキップします。"
-    echo "  インストール: brew install pdfjam"
-fi
+# ヘルパースクリプトを呼び出し
+"$SCRIPT_DIR/_build-operation.sh" \
+  --operation "addition" \
+  --addend "$ADDEND" \
+  "$@"
