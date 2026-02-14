@@ -86,19 +86,43 @@
   )
 }
 
-// 単純な足し算問題を生成
-#let make-addition(a, b) = {
+// 汎用問題生成関数
+#let make-problem(a, b, operation: "add") = {
+  // 演算記号と計算関数の決定
+  let (symbol, calc-fn) = if operation == "add" {
+    ("+", (x, y) => x + y)
+  } else if operation == "subtract" {
+    ("−", (x, y) => x - y)  // マイナス記号（U+2212）
+  } else if operation == "multiply" {
+    ("×", (x, y) => x * y)  // 乗算記号（U+00D7）
+  } else if operation == "divide" {
+    ("÷", (x, y) => calc.quo(x, y))  // 除算記号（U+00F7）
+  } else {
+    panic("不明な演算: " + operation)
+  }
+  
   (
-    // 被加数は3桁右寄せ
-    question: [#box(width: 3em, align(right)[#a]) + #b],
-    answer: a + b,
+    question: [#box(width: 3em, align(right)[#a]) #symbol #b],
+    answer: calc-fn(a, b),
   )
 }
-// 単純な引き算問題を生成
+
+// 足し算専用関数
+#let make-addition(a, b) = {
+  make-problem(a, b, operation: "add")
+}
+
+// 引き算専用関数
 #let make-subtraction(a, b) = {
-  (
-    // 被減数は3桁右寄せ
-    question: [#box(width: 3em, align(right)[#a]) - #b],
-    answer: a - b,
-  )
+  make-problem(a, b, operation: "subtract")
+}
+
+// 掛け算専用関数
+#let make-multiplication(a, b) = {
+  make-problem(a, b, operation: "multiply")
+}
+
+// 割り算専用関数
+#let make-division(a, b) = {
+  make-problem(a, b, operation: "divide")
 }

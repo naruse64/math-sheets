@@ -75,15 +75,25 @@ typst compile --root ~/math-sheets sheet-01.typ test.pdf
 ## プロジェクト構成
 ```
 math-sheets/
-├── templates/       # 共通テンプレート
-├── generators/      # 問題生成ロジック
-├── sheets/          # シート定義ファイル
-│   └── addition/
-│       └── plus-1/
-├── scripts/         # ビルドスクリプト
-└── output/          # 生成されたPDF
-    └── addition/    # A5縦版
-│       └── 2up/    # A4横2up版
+├── templates/                  # 共通テンプレート
+├── generators/                 # 問題生成ロジック
+├── sheets/                     # シート定義ファイル
+│  ├── addition/               # 足し算
+│  │   └── plus-1             # +1の足し算
+│  ├── subtraction/            # 引き算
+│  ├── multiplication/         # 掛け算
+│  └── division/               # 割り算
+├── scripts/                    # ビルドスクリプト
+└── output/                     # 生成されたPDF
+    ├── addition/               # 足し算
+    │   └── plus-1             # +1の足し算
+    │        ├── border/       # A5縦枠有り版
+    │        ├── border-2up/   # A4横枠有り版
+    │        ├── standard/     # A5縦枠なし版
+    │        └── standard-2up/ # A4横枠なし版
+    ├── subtraction/            # 引き算
+    ├── multiplication/         # 掛け算
+    └── division/               # 割り算
 ```
 
 ## 要件
