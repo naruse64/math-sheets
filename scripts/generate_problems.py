@@ -57,7 +57,8 @@ class ProblemGenerator:
         },
     }
     
-    def __init__(self, operation, first_range, second_range, count, seed=None, description=None):
+    def __init__(self, operation, first_range, second_range, count, seed=None, description=None,
+                 first_serial=False, second_serial=False):
         """
         Args:
             operation: 演算種別 ('addition', 'subtraction', 'multiplication', 'division')
@@ -66,6 +67,8 @@ class ProblemGenerator:
             count: 生成する問題数
             seed: 乱数シード（再現性のため）
             description: 問題セットの説明
+            first_serial: 第1オペランドを順番に生成
+            second_serial: 第2オペランドを順番に生成
         """
         if operation not in self.OPERATIONS:
             raise ValueError(f"不明な演算: {operation}")
@@ -76,8 +79,28 @@ class ProblemGenerator:
         self.count = count
         self.seed = seed or random.randint(1, 1000000)
         self.description = description
+        self.first_serial = first_serial
+        self.second_serial = second_serial
         
         random.seed(self.seed)
+    
+    def _generate_number(self, index, range_dict, is_serial):
+        """
+        数値を生成（ランダムまたはシリアル）
+        
+        Args:
+            index: 問題の通し番号
+            range_dict: 範囲 {'min': int, 'max': int}
+            is_serial: Trueの場合、順番に生成
+        
+        Returns:
+            生成された数値
+        """
+        if is_serial:
+            range_size = range_dict['max'] - range_dict['min'] + 1
+            return range_dict['min'] + (index % range_size)
+        else:
+            return random.randint(range_dict['min'], range_dict['max'])
     
     def generate(self):
         """問題セットを生成"""
@@ -93,63 +116,84 @@ class ProblemGenerator:
     def _generate_addition(self):
         """足し算問題生成"""
         problems = []
-        for _ in range(self.count):
-            a = random.randint(self.first_range['min'], self.first_range['max'])
-            b = random.randint(self.second_range['min'], self.second_range['max'])
-            problems.append({
-                'a': a,
-                'b': b,
-                'answer': a + b
-            })
+        
+        if self.first_serial and self.second_serial:
+            # 両方シリアル: ネストループ的に生成
+            range_size_second = self.second_range['max'] - self.second_range['min'] + 1
+            for i in range(self.count):
+                a = self._generate_number(i // range_size_second, self.first_range, True)
+                b = self._generate_number(i, self.second_range, True)
+                problems.append({'a': a, 'b': b, 'answer': a + b})
+        else:
+            # それ以外
+            for i in range(self.count):
+                a = self._generate_number(i, self.first_range, self.first_serial)
+                b = self._generate_number(i, self.second_range, self.second_serial)
+                problems.append({'a': a, 'b': b, 'answer': a + b})
+        
         return problems
     
     def _generate_subtraction(self):
         """引き算問題生成"""
         problems = []
-        for _ in range(self.count):
-            a = random.randint(self.first_range['min'], self.first_range['max'])
-            b = random.randint(self.second_range['min'], self.second_range['max'])
-            
-            # a >= b を保証（負の答えを避ける）
-            if a < b:
-                a, b = b, a
-            
-            problems.append({
-                'a': a,
-                'b': b,
-                'answer': a - b
-            })
+        
+        if self.first_serial and self.second_serial:
+            # 両方シリアル
+            range_size_second = self.second_range['max'] - self.second_range['min'] + 1
+            for i in range(self.count):
+                a = self._generate_number(i // range_size_second, self.first_range, True)
+                b = self._generate_number(i, self.second_range, True)
+                if a < b:
+                    a, b = b, a
+                problems.append({'a': a, 'b': b, 'answer': a - b})
+        else:
+            for i in range(self.count):
+                a = self._generate_number(i, self.first_range, self.first_serial)
+                b = self._generate_number(i, self.second_range, self.second_serial)
+                if a < b:
+                    a, b = b, a
+                problems.append({'a': a, 'b': b, 'answer': a - b})
+        
         return problems
     
     def _generate_multiplication(self):
         """掛け算問題生成"""
         problems = []
-        for _ in range(self.count):
-            a = random.randint(self.first_range['min'], self.first_range['max'])
-            b = random.randint(self.second_range['min'], self.second_range['max'])
-            problems.append({
-                'a': a,
-                'b': b,
-                'answer': a * b
-            })
+        
+        if self.first_serial and self.second_serial:
+            # 両方シリアル
+            range_size_second = self.second_range['max'] - self.second_range['min'] + 1
+            for i in range(self.count):
+                a = self._generate_number(i // range_size_second, self.first_range, True)
+                b = self._generate_number(i, self.second_range, True)
+                problems.append({'a': a, 'b': b, 'answer': a * b})
+        else:
+            for i in range(self.count):
+                a = self._generate_number(i, self.first_range, self.first_serial)
+                b = self._generate_number(i, self.second_range, self.second_serial)
+                problems.append({'a': a, 'b': b, 'answer': a * b})
+        
         return problems
     
     def _generate_division(self):
         """割り算問題生成（割り切れる問題のみ）"""
         problems = []
-        for _ in range(self.count):
-            # quotient（商）を生成
-            quotient = random.randint(self.first_range['min'], self.first_range['max'])
-            # divisor（除数）を生成
-            divisor = random.randint(self.second_range['min'], self.second_range['max'])
-            # dividend（被除数）= quotient × divisor
-            dividend = quotient * divisor
-            
-            problems.append({
-                'a': dividend,
-                'b': divisor,
-                'answer': quotient
-            })
+        
+        if self.first_serial and self.second_serial:
+            # 両方シリアル
+            range_size_second = self.second_range['max'] - self.second_range['min'] + 1
+            for i in range(self.count):
+                quotient = self._generate_number(i // range_size_second, self.first_range, True)
+                divisor = self._generate_number(i, self.second_range, True)
+                dividend = quotient * divisor
+                problems.append({'a': dividend, 'b': divisor, 'answer': quotient})
+        else:
+            for i in range(self.count):
+                quotient = self._generate_number(i, self.first_range, self.first_serial)
+                divisor = self._generate_number(i, self.second_range, self.second_serial)
+                dividend = quotient * divisor
+                problems.append({'a': dividend, 'b': divisor, 'answer': quotient})
+        
         return problems
     
     def to_json(self):
@@ -165,6 +209,10 @@ class ProblemGenerator:
             'ranges': {
                 op_info['operand1_name']: self.first_range,
                 op_info['operand2_name']: self.second_range,
+            },
+            'generation_mode': {
+                'first_serial': self.first_serial,
+                'second_serial': self.second_serial,
             }
         }
         
@@ -265,6 +313,18 @@ def main():
         help='問題セットの説明'
     )
     
+    parser.add_argument(
+        '--first-serial',
+        action='store_true',
+        help='第1オペランドを順番に生成（ランダムではなく）'
+    )
+    
+    parser.add_argument(
+        '--second-serial',
+        action='store_true',
+        help='第2オペランドを順番に生成（ランダムではなく）'
+    )
+    
     args = parser.parse_args()
     
     # 範囲の検証
@@ -283,7 +343,9 @@ def main():
         second_range={'min': args.second_min, 'max': args.second_max},
         count=args.count,
         seed=args.seed,
-        description=args.description
+        description=args.description,
+        first_serial=args.first_serial,
+        second_serial=args.second_serial
     )
     
     result = generator.to_json()
@@ -300,6 +362,8 @@ def main():
     print(f"  演算: {result['metadata']['operation']} ({result['metadata']['symbol']})")
     print(f"  問題数: {result['metadata']['count']}")
     print(f"  シード: {result['metadata']['seed']}")
+    print(f"  生成モード: first={'順次' if result['metadata']['generation_mode']['first_serial'] else 'ランダム'}, " +
+          f"second={'順次' if result['metadata']['generation_mode']['second_serial'] else 'ランダム'}")
     print(f"  範囲:")
     for name, range_data in result['metadata']['ranges'].items():
         print(f"    {name}: {range_data['min']}-{range_data['max']}")
