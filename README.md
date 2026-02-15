@@ -326,19 +326,6 @@ A: 現在は割り切れる問題のみ対応しています。将来的に拡�
 
 ---
 
-## 要件
-
-- Typst
-- Ghostscript（PDF結合用）
-- pdfjam（PDFまとめ加工用）
-```bash
-# Typst と Ghostscript をインストール
-brew install typst ghostscript
-# BasicTeX + pdfjam をインストール
-brew install --cask basictex
-sudo tlmgr install pdfjam
-```
-
 ## ライセンス
 
 MIT
